@@ -1,11 +1,14 @@
 import React from "react";
 
-export default function Banner({ title = "Welcome to My Site", subtitle = "This is a beautiful banner" }) {
+export default function Banner({
+    title = "Welcome to My Site",
+    subtitle = "This is a beautiful banner"
+}) {
     const styles = {
         banner: {
             position: "relative",
             width: "100%",
-            minHeight: "200px",
+            minHeight: "150px",
             borderRadius: "20px",
             background: "linear-gradient(135deg, #667eea, #764ba2)",
             display: "flex",
@@ -14,22 +17,22 @@ export default function Banner({ title = "Welcome to My Site", subtitle = "This 
             alignItems: "center",
             color: "#fff",
             textAlign: "center",
-            padding: "40px 20px",
+            padding: "20px 15px",
             overflow: "hidden",
-            boxShadow: "0 10px 40px rgba(0,0,0,0.3)",
+            boxShadow: "0 8px 30px rgba(0,0,0,0.3)",
             transition: "transform 0.3s ease, box-shadow 0.3s ease",
-            cursor: "pointer"
+            cursor: "pointer",
         },
         title: {
-            fontSize: "2.5rem",
+            fontSize: "1.6rem", // mobil uchun kichik font
             fontWeight: "700",
-            marginBottom: "10px",
-            textShadow: "2px 2px 6px rgba(0,0,0,0.3)"
+            marginBottom: "8px",
+            textShadow: "2px 2px 6px rgba(0,0,0,0.3)",
         },
         subtitle: {
-            fontSize: "1.2rem",
+            fontSize: "0.95rem",
             fontWeight: "400",
-            textShadow: "1px 1px 4px rgba(0,0,0,0.3)"
+            textShadow: "1px 1px 4px rgba(0,0,0,0.3)",
         },
         overlay: {
             content: '""',
@@ -40,17 +43,17 @@ export default function Banner({ title = "Welcome to My Site", subtitle = "This 
             height: "100%",
             background: "rgba(255,255,255,0.05)",
             pointerEvents: "none",
-        }
+        },
     };
     
     const handleMouseEnter = (e) => {
         e.currentTarget.style.transform = "scale(1.03)";
-        e.currentTarget.style.boxShadow = "0 15px 50px rgba(0,0,0,0.5)";
+        e.currentTarget.style.boxShadow = "0 12px 40px rgba(0,0,0,0.5)";
     };
     
     const handleMouseLeave = (e) => {
         e.currentTarget.style.transform = "scale(1)";
-        e.currentTarget.style.boxShadow = "0 10px 40px rgba(0,0,0,0.3)";
+        e.currentTarget.style.boxShadow = "0 8px 30px rgba(0,0,0,0.3)";
     };
     
     return (

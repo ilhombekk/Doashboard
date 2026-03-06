@@ -16,16 +16,12 @@ export default function Categories() {
             setDisplay(display === "0" ? String(digit) : display + digit);
         }
     };
-    
     const inputDecimal = () => {
         if (waitingForOperand) {
             setDisplay("0.");
             setWaitingForOperand(false);
-        } else if (!display.includes(".")) {
-            setDisplay(display + ".");
-        }
+        } else if (!display.includes(".")) setDisplay(display + ".");
     };
-    
     const clear = () => {
         setDisplay("0");
         setPreviousValue(null);
@@ -33,67 +29,45 @@ export default function Categories() {
         setWaitingForOperand(false);
         setActiveOp(null);
     };
-    
-    const toggleSign = () => {
-        setDisplay(String(parseFloat(display) * -1));
-    };
-    
-    const inputPercent = () => {
-        setDisplay(String(parseFloat(display) / 100));
-    };
-    
-    const calculate = (firstValue, secondValue, operation) => {
-        switch (operation) {
-            case "+": return firstValue + secondValue;
-            case "-": return firstValue - secondValue;
-            case "×": return firstValue * secondValue;
-            case "÷": return secondValue !== 0 ? firstValue / secondValue : 0;
-            default: return secondValue;
+    const toggleSign = () => setDisplay(String(parseFloat(display) * -1));
+    const inputPercent = () => setDisplay(String(parseFloat(display) / 100));
+    const calculate = (a, b, op) => {
+        switch (op) {
+            case "+": return a + b;
+            case "-": return a - b;
+            case "×": return a * b;
+            case "÷": return b !== 0 ? a / b : 0;
+            default: return b;
         }
     };
-    
     const performOperation = (nextOperation) => {
         const inputValue = parseFloat(display);
-        
-        if (previousValue === null) {
-            setPreviousValue(inputValue);
-        } else if (operation) {
+        if (previousValue === null) setPreviousValue(inputValue);
+        else if (operation) {
             const newValue = calculate(previousValue, inputValue, operation);
             setDisplay(String(newValue));
             setPreviousValue(newValue);
         }
-        
         setWaitingForOperand(true);
         setOperation(nextOperation === "=" ? null : nextOperation);
         setActiveOp(nextOperation !== "=" ? nextOperation : null);
     };
-    
     const handleEquals = () => performOperation("=");
     
     // --- Keyboard support ---
     useEffect(() => {
         const handleKeyDown = (e) => {
             const key = e.key;
-            
-            if (!isNaN(key)) {
-                inputDigit(Number(key));
-            } else if (key === ".") {
-                inputDecimal();
-            } else if (key === "+" || key === "-" || key === "*" || key === "/") {
+            if (!isNaN(key)) inputDigit(Number(key));
+            else if (key === ".") inputDecimal();
+            else if ("+-*/".includes(key)) {
                 const opMap = { "+": "+", "-": "-", "*": "×", "/": "÷" };
                 performOperation(opMap[key]);
-            } else if (key === "Enter") {
-                handleEquals();
-            } else if (key === "Backspace") {
-                // Delete last digit
-                setDisplay((prev) => (prev.length > 1 ? prev.slice(0, -1) : "0"));
-            } else if (key === "%") {
-                inputPercent();
-            } else if (key === "c" || key === "C") {
-                clear();
-            }
+            } else if (key === "Enter") handleEquals();
+            else if (key === "Backspace") setDisplay((prev) => (prev.length > 1 ? prev.slice(0, -1) : "0"));
+            else if (key === "%") inputPercent();
+            else if (key.toLowerCase() === "c") clear();
         };
-        
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [display, previousValue, operation, waitingForOperand]);
@@ -112,19 +86,20 @@ export default function Categories() {
         calculator: {
             width: "100%",
             maxWidth: "380px",
-            padding: "30px",
+            padding: "20px",
             borderRadius: "25px",
             background: "linear-gradient(145deg, #1e1e1e, #2d2d2d)",
             boxShadow: "0 25px 70px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)",
+            "@media(max-width: 375px)": { padding: "15px" }
         },
         display: {
-            height: "90px",
-            marginBottom: "25px",
-            padding: "35px 25px",
+            height: "80px",
+            marginBottom: "20px",
+            padding: "25px 15px",
             borderRadius: "15px",
             background: "linear-gradient(145deg, #252525, #1a1a1a)",
             color: "#fff",
-            fontSize: "52px",
+            fontSize: "36px", // kichik ekran uchun font
             textAlign: "right",
             overflow: "hidden",
             boxShadow: "inset 0 2px 10px rgba(0,0,0,0.5)",
@@ -135,47 +110,30 @@ export default function Categories() {
         buttons: {
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "15px",
+            gap: "10px",
         },
         btn: {
             border: "none",
             borderRadius: "50%",
-            fontSize: "26px",
+            fontSize: "22px",
             fontWeight: "500",
-            height: "75px",
+            height: "60px",
             cursor: "pointer",
             boxShadow: "0 4px 15px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1)",
         },
-        btnGray: {
-            background: "linear-gradient(145deg, #5a5a5a, #4a4a4a)",
-            color: "#fff",
-        },
-        btnOrange: {
-            background: "linear-gradient(145deg, #ff9500, #ff8000)",
-            color: "#fff",
-            fontWeight: "600",
-        },
-        btnOrangeActive: {
-            background: "#fff",
-            color: "#ff9500",
-        },
-        btnZero: {
-            gridColumn: "span 2",
-            textAlign: "left",
-            paddingLeft: "35px",
-            borderRadius: "40px",
-        },
+        btnGray: { background: "linear-gradient(145deg, #5a5a5a, #4a4a4a)", color: "#fff" },
+        btnOrange: { background: "linear-gradient(145deg, #ff9500, #ff8000)", color: "#fff", fontWeight: "600" },
+        btnOrangeActive: { background: "#fff", color: "#ff9500" },
+        btnZero: { gridColumn: "span 2", textAlign: "left", paddingLeft: "25px", borderRadius: "40px" },
     };
     
     const [hoverStates, setHoverStates] = useState({});
     const handleMouseEnter = (key) => setHoverStates((prev) => ({ ...prev, [key]: true }));
     const handleMouseLeave = (key) => setHoverStates((prev) => ({ ...prev, [key]: false }));
-    
-    const getButtonStyle = (base, type, key) => {
-        let style = { ...base };
+    const getButtonStyle = (base, type, key, extra = {}) => {
+        let style = { ...base, ...extra };
         const isHovered = hoverStates[key];
         const isActive = type === "orange" && activeOp === key;
-        
         if (type === "gray") style = { ...style, ...styles.btnGray };
         if (type === "orange") style = isActive ? { ...style, ...styles.btnOrangeActive } : { ...style, ...styles.btnOrange };
         if (isHovered) style.transform = "scale(1.05)";
@@ -217,7 +175,7 @@ export default function Categories() {
             <button
             key={btn.label}
             onClick={btn.onClick}
-            style={{ ...getButtonStyle(styles.btn, btn.type, btn.label), ...(btn.extra || {}) }}
+            style={getButtonStyle(styles.btn, btn.type, btn.label, btn.extra)}
             onMouseEnter={() => handleMouseEnter(btn.label)}
             onMouseLeave={() => handleMouseLeave(btn.label)}
             >
